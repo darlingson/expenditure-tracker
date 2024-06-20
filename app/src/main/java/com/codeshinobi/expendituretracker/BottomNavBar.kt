@@ -19,7 +19,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.codeshinobi.expendituretracker.screens.ExpendituresScreen
+import com.codeshinobi.expendituretracker.screens.GalleryScreen
 import com.codeshinobi.expendituretracker.screens.HomeScreen
+import com.codeshinobi.expendituretracker.screens.ManualScreen
+import com.codeshinobi.expendituretracker.screens.ReceiptScanScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +73,21 @@ fun BottomNavigationBar() {
             }
             composable(Screens.Expenditures.route) {
                 ExpendituresScreen(
+                    navController = navController
+                )
+            }
+            composable(Screens.ReceiptScan.route) {
+                ReceiptScanScreen(
+                    navController = navController
+                )
+            }
+            composable(Screens.Gallery.route) {
+                GalleryScreen(
+                    navController = navController
+                )
+            }
+            composable(Screens.ManualEntry.route) {
+                ManualScreen(
                     navController = navController
                 )
             }
