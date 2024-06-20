@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.codeshinobi.expendituretracker.Screens
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
@@ -42,15 +43,15 @@ fun HomeScreen(navController: NavController) {
                 HomeGridItemData(
                     name = "Scan Receipt",
                     icon = FontAwesomeIcons.Solid.CameraRetro,
-                    onClick = { /* Navigate to camera screen */ }),
+                    onClick = { navController.navigate(Screens.ReceiptScan.route) }),
                 HomeGridItemData(
                     name = "Gallery",
                     icon = FontAwesomeIcons.Solid.PhotoVideo,
-                    onClick = { /* Navigate to gallery screen */ }),
+                    onClick = {navController.navigate(Screens.Gallery.route)}),
                 HomeGridItemData(
                     name = "Enter manually",
                     icon = FontAwesomeIcons.Regular.Keyboard,
-                    onClick = { /* Navigate to manual entry screen */ })
+                    onClick = { navController.navigate(Screens.ManualEntry.route) })
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
