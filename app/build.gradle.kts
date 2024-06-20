@@ -72,4 +72,6 @@ dependencies {
     implementation ("com.google.mlkit:text-recognition:16.0.0")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+    implementation("br.com.devsrsouza.compose.icons:simple-icons:1.1.0")
+    implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
 }
