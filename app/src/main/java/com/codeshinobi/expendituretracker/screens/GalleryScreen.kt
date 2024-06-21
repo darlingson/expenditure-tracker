@@ -38,6 +38,9 @@ fun GalleryScreen(
 }
 @Composable
 fun RequestContentPermission() {
+    /**
+     * this code is from the article : https://ngengesenior.medium.com/pick-image-from-gallery-in-jetpack-compose-5fa0d0a8ddaf
+     * */
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
