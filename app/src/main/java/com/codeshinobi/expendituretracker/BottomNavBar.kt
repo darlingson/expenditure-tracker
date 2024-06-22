@@ -15,14 +15,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.codeshinobi.expendituretracker.screens.ExpendituresScreen
 import com.codeshinobi.expendituretracker.screens.GalleryScreen
 import com.codeshinobi.expendituretracker.screens.HomeScreen
 import com.codeshinobi.expendituretracker.screens.ManualScreen
 import com.codeshinobi.expendituretracker.screens.ReceiptScanScreen
+import com.codeshinobi.expendituretracker.screens.ScanResultsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,10 +89,11 @@ fun BottomNavigationBar() {
                     navController = navController
                 )
             }
-            composable(Screens.ManualEntry.route) {
-                ManualScreen(
-                    navController = navController
-                )
+            composable(Screens.ScanResults.route) { backStackEntry ->
+                val text = backStackEntry.arguments?.getString("text")
+                if (text != null) {
+                    ScanResultsScreen(navController, text)
+                }
             }
         }
     }

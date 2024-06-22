@@ -78,4 +78,10 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("br.com.devsrsouza.compose.icons:simple-icons:1.1.0")
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
+
+//    implementation ("androidx.camera:camera-core")
+//    implementation ("androidx.camera:camera-camera2")
+//    implementation ("androidx.camera:camera-lifecycle")
+//    implementation ("androidx.camera:camera-view")
+
 }

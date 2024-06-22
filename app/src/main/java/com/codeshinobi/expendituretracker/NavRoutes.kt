@@ -6,4 +6,10 @@ sealed class Screens(val route : String) {
     object ReceiptScan : Screens("receipt_scan_route")
     object ManualEntry : Screens("manual_entry_route")
     object Gallery : Screens("gallery_route")
+//    object ScanResults : Screens("scan_results_route")
+object ScanResults : Screens("scan_results_route") {
+    fun createRoute(text: String): String {
+        return "scan_results_route/$text"
+    }
+}
 }
