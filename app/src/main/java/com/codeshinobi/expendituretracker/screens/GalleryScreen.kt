@@ -57,13 +57,14 @@ fun GalleryScreen(
                 recogText = RecognizeResult(text)
             },
             onProcessing = { processing ->
-                Toast.makeText(context, "Text scanning completed", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Text scanning completed", Toast.LENGTH_SHORT).show()
                 isProcessing = false
                 val gson: Gson = GsonBuilder().create()
-                if (recogText == null){
-                    Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
+                if (recogText == null || recogText?.text.isNullOrEmpty()){
+//                    Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
                 }
                 else {
+                    Log.d("TAG", "recogText: ${recogText?.text}")
                     val recogJson = gson.toJson(recogText)
                     navController.navigate(
                         "text_recon/{text}"
