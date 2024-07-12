@@ -7,10 +7,10 @@ import android.os.Build
 import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +30,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.codeshinobi.expendituretracker.screens.components.DotLoadingAnimation
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -40,20 +43,55 @@ fun GalleryScreen(
     navController: NavController
 ) {
     var scannedText by remember { mutableStateOf("") }
+    var isProcessing by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var recogText: RecognizeResult? = null
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState(), enabled = true)
     ) {
         Text("Gallery")
         RequestContentPermission(
             navController = navController,
-            onTextScanned = { text -> scannedText = text }
+            onTextScanned = { text ->
+                scannedText = text
+                recogText = RecognizeResult(text)
+            },
+            onProcessing = { processing ->
+                Toast.makeText(context, "Text scanning completed", Toast.LENGTH_SHORT).show()
+                isProcessing = false
+                val gson: Gson = GsonBuilder().create()
+                if (recogText == null){
+                    Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    val recogJson = gson.toJson(recogText)
+                    navController.navigate(
+                        "text_recon/{text}"
+                            .replace(
+                                oldValue = "{text}",
+                                newValue = recogJson
+                            )
+                    )
+                }
+            }
         )
-        Text(text = scannedText)
+        if (isProcessing) {
+            Text(text = isProcessing.toString())
+            DotLoadingAnimation()
+        }
+        else {
+            Text(text = isProcessing.toString())
+            Text(text = scannedText)
+        }
     }
 }
 
 @Composable
-fun RequestContentPermission(navController: NavController, onTextScanned: (String) -> Unit) {
+fun RequestContentPermission(
+    navController: NavController,
+    onTextScanned: (String) -> Unit,
+    onProcessing: (Boolean) -> Unit
+    ) {
     val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
     /**
@@ -94,7 +132,7 @@ fun RequestContentPermission(navController: NavController, onTextScanned: (Strin
             } catch (e: Exception) {
                 Log.e("GalleryScreen", "Image loading failed: ${e.message}", e)
             }
-
+            onProcessing(true)
             bitmap.value?.let { btm ->
                 Image(
                     bitmap = btm.asImageBitmap(),
@@ -108,9 +146,11 @@ fun RequestContentPermission(navController: NavController, onTextScanned: (Strin
                     .addOnSuccessListener { visionText ->
                         Log.d("TAG", "onSuccess: ${visionText.text}")
                         onTextScanned(visionText.text)
+                        onProcessing(false)
                     }
                     .addOnFailureListener { e ->
                         Log.d("TAG", "onFailure: ${e.message}", e)
+                        onProcessing(false)
                     }
             }
         }
@@ -119,3 +159,4 @@ fun RequestContentPermission(navController: NavController, onTextScanned: (Strin
 
 @Parcelize
 data class ScanResultsData(val text: String) : Parcelable
+data class RecognizeResult(val text: String)

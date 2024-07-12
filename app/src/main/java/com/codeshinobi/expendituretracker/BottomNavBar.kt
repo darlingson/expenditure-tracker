@@ -25,7 +25,10 @@ import com.codeshinobi.expendituretracker.screens.GalleryScreen
 import com.codeshinobi.expendituretracker.screens.HomeScreen
 import com.codeshinobi.expendituretracker.screens.ManualScreen
 import com.codeshinobi.expendituretracker.screens.ReceiptScanScreen
+import com.codeshinobi.expendituretracker.screens.RecognizeResult
 import com.codeshinobi.expendituretracker.screens.ScanResultsScreen
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,6 +96,17 @@ fun BottomNavigationBar() {
                 val text = backStackEntry.arguments?.getString("text")
                 if (text != null) {
                     ScanResultsScreen(navController, text)
+                }
+            }
+            composable("text_recon/{text}"){navBackStackEntry ->
+                val gson: Gson = GsonBuilder().create()
+                val recogJson = navBackStackEntry.arguments?.getString("text")
+                val recogObject = gson.fromJson(recogJson, RecognizeResult::class.java)
+//                recogJson?.let { text->
+//                    ScanResultsScreen(navController, text)
+//                }
+                recogObject?.let { recog ->
+                    ScanResultsScreen(navController, recog.text)
                 }
             }
         }
