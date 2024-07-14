@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "budgets")
 data class Budget(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "month")
     val month: Int,
     @ColumnInfo(name = "year")
