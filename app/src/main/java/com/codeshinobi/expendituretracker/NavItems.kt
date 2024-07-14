@@ -31,7 +31,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "Budgets",
                 icon = FontAwesomeIcons.Solid.BalanceScale,
-                route = Screens.ReceiptScan.route
+                route = Screens.Budgets.route
             ),
             BottomNavigationItem(
                 label = "Reports",
