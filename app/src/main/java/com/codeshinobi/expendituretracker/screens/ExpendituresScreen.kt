@@ -58,6 +58,10 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.regular.Keyboard
 import compose.icons.fontawesomeicons.solid.CameraRetro
 import compose.icons.fontawesomeicons.solid.PhotoVideo
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 data class ExpendituresGridItemData(val name: String, val icon: ImageVector, val onClick: () -> Unit)
 @OptIn(ExperimentalFoundationApi::class)
@@ -210,7 +214,18 @@ fun CurrentMonthScreen(
     viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
 ) {
     val currentMonthExpenses by viewModel.getAllExpenses().collectAsState(initial = emptyList())
+    val currentCalendar = Calendar.getInstance()
+    val currentMonth = currentCalendar.get(Calendar.MONTH) // Calendar.MONTH is zero-based
+    val currentYear = currentCalendar.get(Calendar.YEAR)
+    val currentMonthFilteredExpenses = currentMonthExpenses.filter { expense ->
+        val expenseCalendar = Calendar.getInstance().apply {
+            time = Date(expense.date)
+        }
+        val expenseMonth = expenseCalendar.get(Calendar.MONTH)
+        val expenseYear = expenseCalendar.get(Calendar.YEAR)
 
+        expenseMonth == currentMonth && expenseYear == currentYear
+    }.sortedByDescending { it.date }
     ExpenditureTrackerTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -228,8 +243,8 @@ fun CurrentMonthScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(currentMonthExpenses.size) { expense ->
-                        ExpenseItem(expense = currentMonthExpenses[expense])
+                    items(currentMonthFilteredExpenses.size) { expense ->
+                        ExpenseItem(expense = currentMonthFilteredExpenses[expense])
                     }
                 }
             }
