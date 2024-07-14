@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
@@ -29,6 +30,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,9 +45,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.codeshinobi.expendituretracker.Screens
+import com.codeshinobi.expendituretracker.data.ExpensesViewModel
+import com.codeshinobi.expendituretracker.data.entities.Expense
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
@@ -176,7 +181,7 @@ fun ExpendituresTabScreen(navController: NavHostController) {
     var tabIndex by remember { mutableStateOf(0) }
 
     val tabs = listOf("Current Month", "Add New", "Previous Months")
-
+    val viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
     Column(modifier = Modifier.fillMaxWidth()) {
         TabRow(selectedTabIndex = tabIndex) {
             tabs.forEachIndexed { index, title ->
@@ -194,14 +199,18 @@ fun ExpendituresTabScreen(navController: NavHostController) {
             }
         }
         when (tabIndex) {
-            0 -> CurrentMonthScreen()
+            0 -> CurrentMonthScreen( viewModel)
             1 -> AddNewExpendituresScreen(navController)
-            2 -> PreviousMonthsScreen()
+            2 -> PreviousMonthsScreen( viewModel)
         }
     }
 }
 @Composable
-fun CurrentMonthScreen() {
+fun CurrentMonthScreen(
+    viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
+) {
+    val currentMonthExpenses by viewModel.getAllExpenses().collectAsState(initial = emptyList())
+
     ExpenditureTrackerTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -216,12 +225,21 @@ fun CurrentMonthScreen() {
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
                 )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(currentMonthExpenses.size) { expense ->
+                        ExpenseItem(expense = currentMonthExpenses[expense])
+                    }
+                }
             }
         }
     }
 }
 @Composable
-fun PreviousMonthsScreen() {
+fun PreviousMonthsScreen(viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)) {
+    val previousMonthsExpenses by viewModel.getAllExpenses().collectAsState(initial = emptyList())
+
     ExpenditureTrackerTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -236,7 +254,34 @@ fun PreviousMonthsScreen() {
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
                 )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(previousMonthsExpenses.size) { expense ->
+                        ExpenseItem(expense = previousMonthsExpenses[expense])
+                    }
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun ExpenseItem(expense: Expense) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(text = expense.name, style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Amount: $${expense.amount}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Date: ${expense.date}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Category: ${expense.category}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Note: ${expense.note}", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
