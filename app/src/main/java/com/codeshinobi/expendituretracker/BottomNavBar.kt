@@ -2,8 +2,10 @@ package com.codeshinobi.expendituretracker
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -14,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -50,7 +53,8 @@ fun BottomNavigationBar() {
                         icon = {
                             Icon(
                                 navigationItem.icon,
-                                contentDescription = navigationItem.label
+                                contentDescription = navigationItem.label,
+                                modifier = Modifier.size(24.dp)
                             )
                         },
                         onClick = {
@@ -82,6 +86,12 @@ fun BottomNavigationBar() {
                     navController = navController
                 )
             }
+            composable(Screens.Budgets.route) {
+                Text("Budgets Screen")
+            }
+            composable(Screens.Reports.route) {
+                Text("Reports Screen")
+            }
             composable(Screens.ReceiptScan.route) {
                 ReceiptScanScreen(
                     navController = navController
@@ -102,9 +112,6 @@ fun BottomNavigationBar() {
                 val gson: Gson = GsonBuilder().create()
                 val recogJson = navBackStackEntry.arguments?.getString("text")
                 val recogObject = gson.fromJson(recogJson, RecognizeResult::class.java)
-//                recogJson?.let { text->
-//                    ScanResultsScreen(navController, text)
-//                }
                 recogObject?.let { recog ->
                     ScanResultsScreen(navController, recog.text)
                 }
