@@ -8,5 +8,5 @@ class BudgetsRepository(private val budgetsDao: BudgetsDao) {
     suspend fun insert(budget: Budget) = budgetsDao.insert(budget)
     suspend fun delete(budget: Budget) = budgetsDao.delete(budget)
     suspend fun deleteAll( budgets: List<Budget>) = budgetsDao.deleteAll(budgets)
-
+    suspend fun getByMonth(month: Int) = budgetsDao.getByMonth(month)
 }

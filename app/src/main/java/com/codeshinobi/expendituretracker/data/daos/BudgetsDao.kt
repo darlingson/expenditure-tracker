@@ -26,4 +26,7 @@ interface BudgetsDao {
     @Query("SELECT * FROM budgets WHERE id = :id")
     fun getById(id: Int): Budget
 
+    @Query("SELECT * FROM budgets WHERE month = :month")
+    suspend fun getByMonth(month: Int): Budget
+
 }
