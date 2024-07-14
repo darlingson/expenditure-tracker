@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.codeshinobi.expendituretracker.screens.ExpendituresTabScreen
 import com.codeshinobi.expendituretracker.screens.GalleryScreen
 import com.codeshinobi.expendituretracker.screens.HomeScreen
+import com.codeshinobi.expendituretracker.screens.ManualScreen
 import com.codeshinobi.expendituretracker.screens.ReceiptScanScreen
 import com.codeshinobi.expendituretracker.screens.RecognizeResult
 import com.codeshinobi.expendituretracker.screens.ScanResultsScreen
@@ -111,6 +112,11 @@ fun BottomNavigationBar() {
                 recogObject?.let { recog ->
                     ScanResultsScreen(navController, recog.text)
                 }
+            }
+            composable(Screens.ManualEntry.route) {
+                ManualScreen(
+                    navController = navController
+                )
             }
         }
     }
