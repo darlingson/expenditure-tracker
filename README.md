@@ -47,7 +47,7 @@ The Expenditure Tracker App is an Android application designed to help users man
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/expenditure-tracker-app.git
+    git clone https://github.com/darlingson/expenditure-tracker.git
     ```
 2. Open the project in Android Studio.
 3. Build and run the project on an emulator or a physical device.
@@ -55,8 +55,8 @@ The Expenditure Tracker App is an Android application designed to help users man
 ## Usage
 
 1. **Home Screen**: View your total spending, monthly budget, and remaining budget. Navigate to other screens.
-2. **Add Expense**: Navigate to the expense entry screen to manually add an expense or scan a receipt.
-3. **Set Budget**: Navigate to the budget entry screen to set or update your monthly budget.
+2. **Expenditures**: Navigate to the expenditures entry screen to manually add an expense or scan a receipt.
+3. **Budgets**: Navigate to the budget screen to set or update your monthly budget.
 4. **View Reports**: Navigate to the reports screen to see a summary of your weekly and monthly spending.
 
 ## Contributing
