@@ -254,7 +254,17 @@ fun CurrentMonthScreen(
 @Composable
 fun PreviousMonthsScreen(viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)) {
     val previousMonthsExpenses by viewModel.getAllExpenses().collectAsState(initial = emptyList())
-
+    val currentCalendar = Calendar.getInstance()
+    val currentMonth = currentCalendar.get(Calendar.MONTH) // Calendar.MONTH is zero-based
+    val currentYear = currentCalendar.get(Calendar.YEAR)
+    val previousMonthsFilteredExpenses = previousMonthsExpenses.filter { expense ->
+        val expenseCalendar = Calendar.getInstance().apply {
+            time = Date(expense.date)
+        }
+        val expenseMonth = expenseCalendar.get(Calendar.MONTH)
+        val expenseYear = expenseCalendar.get(Calendar.YEAR)
+        (expenseYear < currentYear) || (expenseYear == currentYear && expenseMonth < currentMonth)
+    }
     ExpenditureTrackerTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -272,8 +282,8 @@ fun PreviousMonthsScreen(viewModel: ExpensesViewModel = viewModel(factory = Expe
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(previousMonthsExpenses.size) { expense ->
-                        ExpenseItem(expense = previousMonthsExpenses[expense])
+                    items(previousMonthsFilteredExpenses.size) { expense ->
+                        ExpenseItem(expense = previousMonthsFilteredExpenses[expense])
                     }
                 }
             }
