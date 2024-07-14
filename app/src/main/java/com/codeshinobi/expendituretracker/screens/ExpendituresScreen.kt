@@ -15,14 +15,24 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -34,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.codeshinobi.expendituretracker.Screens
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
 import compose.icons.FontAwesomeIcons
@@ -46,7 +57,7 @@ import compose.icons.fontawesomeicons.solid.PhotoVideo
 data class ExpendituresGridItemData(val name: String, val icon: ImageVector, val onClick: () -> Unit)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ExpendituresScreen(navController: NavController) {
+fun AddNewExpendituresScreen(navController: NavController) {
     ExpenditureTrackerTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -161,6 +172,71 @@ fun ExpenditureGridItem(
     }
 }
 @Composable
-fun Placeholder() {
+fun ExpendituresTabScreen(navController: NavHostController) {
+    var tabIndex by remember { mutableStateOf(0) }
 
+    val tabs = listOf("Current Month", "Add New", "Previous Months")
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        TabRow(selectedTabIndex = tabIndex) {
+            tabs.forEachIndexed { index, title ->
+                Tab(text = { Text(title) },
+                    selected = tabIndex == index,
+                    onClick = { tabIndex = index },
+                    icon = {
+                        when (index) {
+                            0 -> Icon(imageVector = Icons.Default.Home, contentDescription = null)
+                            1 -> Icon(imageVector = Icons.Default.Info, contentDescription = null)
+                            2 -> Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+                        }
+                    }
+                )
+            }
+        }
+        when (tabIndex) {
+            0 -> CurrentMonthScreen()
+            1 -> AddNewExpendituresScreen(navController)
+            2 -> PreviousMonthsScreen()
+        }
+    }
+}
+@Composable
+fun CurrentMonthScreen() {
+    ExpenditureTrackerTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "Current Month Expenditure",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+                )
+            }
+        }
+    }
+}
+@Composable
+fun PreviousMonthsScreen() {
+    ExpenditureTrackerTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "Previous Months Expenditure",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+                )
+            }
+        }
+    }
 }
