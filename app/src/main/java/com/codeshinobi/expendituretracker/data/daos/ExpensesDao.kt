@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 interface ExpensesDao {
     @Query("SELECT * FROM expenses")
     fun getAll(): Flow<List<Expense>>
+    @Query("SELECT * FROM expenses ORDER BY date LIMIT 10")
+    fun getLatest(): Flow<List<Expense>>
 
     @Query("SELECT * FROM expenses WHERE id = :id")
     fun getById(id: Int): Expense
