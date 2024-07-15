@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.codeshinobi.expendituretracker.data.ExpensesViewModel
+import com.codeshinobi.expendituretracker.screens.components.ExpenseItem
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
 
 

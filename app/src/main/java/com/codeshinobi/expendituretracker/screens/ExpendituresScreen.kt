@@ -51,6 +51,7 @@ import androidx.navigation.NavHostController
 import com.codeshinobi.expendituretracker.Screens
 import com.codeshinobi.expendituretracker.data.ExpensesViewModel
 import com.codeshinobi.expendituretracker.data.entities.Expense
+import com.codeshinobi.expendituretracker.screens.components.ExpenseItem
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
@@ -291,22 +292,3 @@ fun PreviousMonthsScreen(viewModel: ExpensesViewModel = viewModel(factory = Expe
     }
 }
 
-@Composable
-fun ExpenseItem(expense: Expense) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(text = expense.name, style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Amount: $${expense.amount}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Date: ${expense.date}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Category: ${expense.category}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Note: ${expense.note}", style = MaterialTheme.typography.bodyMedium)
-        }
-    }
-}
