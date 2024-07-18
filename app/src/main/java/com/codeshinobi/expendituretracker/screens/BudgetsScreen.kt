@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -42,8 +43,10 @@ import androidx.navigation.NavHostController
 import com.codeshinobi.expendituretracker.data.ExpensesViewModel
 import com.codeshinobi.expendituretracker.data.entities.Budget
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 @Composable
 fun BudgetsScreen(navController: NavHostController) {
@@ -119,6 +122,7 @@ fun CurrentMonthBudgetOverView(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
                 )
+                currentMonthBudget?.budget?.let { it1 -> BudgetLimitCheck(it1, expensesTotal) }
 //                Text(
 //                    text = "$expensesTotal",
 //                    style = MaterialTheme.typography.bodyMedium,
@@ -240,6 +244,10 @@ val context = LocalContext.current
 
 @Composable
 fun BudgetItem(budget: Budget) {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.MONTH, budget.month)
+    val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
+    val monthName = dateFormat.format(calendar.time)
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -249,8 +257,68 @@ fun BudgetItem(budget: Budget) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(text = "Month: ${budget.month}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "Month: ${monthName}", style = MaterialTheme.typography.bodyLarge)
             Text(text = "Amount: ${budget.budget}", style = MaterialTheme.typography.bodyLarge)
+        }
+    }
+}
+@Composable
+fun BudgetLimitCheck(
+    budget:Double, totalExpenses:Double
+){
+    var budgetBalance = budget - totalExpenses
+    if(budget > totalExpenses){
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Green,
+                contentColor = MaterialTheme.colorScheme.primary
+            )
+        ){
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "You're within your budget limit", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Remaining Balance: ${budgetBalance}", style = MaterialTheme.typography.bodyLarge)
+            }
+        }
+    }
+    else if (budget < totalExpenses){
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ){
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = "You're over your budget limit", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "Remaining Balance: ${budgetBalance}", style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+    }
+    else if (budget == totalExpenses){
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Green,
+                contentColor = MaterialTheme.colorScheme.primary
+            )
+        ){
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(text = "You're within your budget limit", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Remaining Balance: ${budgetBalance}", style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 }
