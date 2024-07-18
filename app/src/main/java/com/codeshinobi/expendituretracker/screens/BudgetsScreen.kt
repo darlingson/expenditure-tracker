@@ -109,30 +109,21 @@ fun CurrentMonthBudgetOverView(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(it),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .padding(it)
             ) {
                 if (currentMonthBudget != null) {
-                    Text(
-                        text = "Current Budget",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
                     BudgetItem(currentMonthBudget!!)
-
                 }
                 Text(
-                    text = "Current Total Expenditure",
+                    text = "Current Total Expenditure : $expensesTotal",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
                 )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "$expensesTotal",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
-                )
+//                Text(
+//                    text = "$expensesTotal",
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+//                )
             }
             if (showDialog.value) {
                 AlertDialog(
