@@ -13,4 +13,5 @@ sealed class Screens(val route: String) {
             return "scan_results_route/$text"
         }
     }
+    object addScreen : Screens("add_screen_route")
 }

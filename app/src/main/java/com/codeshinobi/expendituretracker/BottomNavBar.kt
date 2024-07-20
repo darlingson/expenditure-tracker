@@ -20,6 +20,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.codeshinobi.expendituretracker.screens.AddNewExpendituresScreen
 import com.codeshinobi.expendituretracker.screens.BudgetsScreen
 import com.codeshinobi.expendituretracker.screens.ExpendituresTabScreen
 import com.codeshinobi.expendituretracker.screens.GalleryScreen
@@ -118,6 +119,9 @@ fun BottomNavigationBar() {
                 ManualScreen(
                     navController = navController
                 )
+            }
+            composable(Screens.addScreen.route) {
+                AddNewExpendituresScreen(navController = navController)
             }
         }
     }

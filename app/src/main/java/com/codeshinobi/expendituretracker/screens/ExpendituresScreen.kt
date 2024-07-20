@@ -17,14 +17,17 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -187,7 +190,12 @@ fun ExpendituresTabScreen(navController: NavHostController) {
 
     val tabs = listOf("Current Month", /*"Add New",*/ "Previous Months")
     val viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Scaffold(floatingActionButton = {
+        FloatingActionButton(onClick = { navController.navigate(Screens.addScreen.route) }) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = null)
+        }
+    }){
+    Column(modifier = Modifier.fillMaxWidth().padding(it)) {
         TabRow(selectedTabIndex = tabIndex) {
             tabs.forEachIndexed { index, title ->
                 Tab(text = { Text(title) },
@@ -208,6 +216,7 @@ fun ExpendituresTabScreen(navController: NavHostController) {
 /*            1 -> AddNewExpendituresScreen(navController)*/
             1 -> PreviousMonthsScreen( viewModel)
         }
+    }
     }
 }
 @Composable
@@ -232,6 +241,7 @@ fun CurrentMonthScreen(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
