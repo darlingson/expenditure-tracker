@@ -28,6 +28,7 @@ import com.codeshinobi.expendituretracker.screens.HomeScreen
 import com.codeshinobi.expendituretracker.screens.ManualScreen
 import com.codeshinobi.expendituretracker.screens.ReceiptScanScreen
 import com.codeshinobi.expendituretracker.screens.RecognizeResult
+import com.codeshinobi.expendituretracker.screens.ReportsScreen
 import com.codeshinobi.expendituretracker.screens.ScanResultsScreen
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -89,7 +90,8 @@ fun BottomNavigationBar() {
                 BudgetsScreen(navController = navController)
             }
             composable(Screens.Reports.route) {
-                Text("Reports Screen")
+//                Text("Reports Screen")
+                ReportsScreen(navController = navController)
             }
             composable(Screens.ReceiptScan.route) {
                 ReceiptScanScreen(
