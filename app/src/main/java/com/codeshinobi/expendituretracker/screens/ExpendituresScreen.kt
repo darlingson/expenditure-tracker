@@ -18,20 +18,22 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,7 +55,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.codeshinobi.expendituretracker.Screens
 import com.codeshinobi.expendituretracker.data.ExpensesViewModel
-import com.codeshinobi.expendituretracker.data.entities.Expense
 import com.codeshinobi.expendituretracker.screens.components.ExpenseItem
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
 import compose.icons.FontAwesomeIcons
@@ -62,18 +63,38 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.regular.Keyboard
 import compose.icons.fontawesomeicons.solid.CameraRetro
 import compose.icons.fontawesomeicons.solid.PhotoVideo
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
-data class ExpendituresGridItemData(val name: String, val icon: ImageVector, val onClick: () -> Unit)
-@OptIn(ExperimentalFoundationApi::class)
+data class ExpendituresGridItemData(
+    val name: String,
+    val icon: ImageVector,
+    val onClick: () -> Unit
+)
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AddNewExpendituresScreen(navController: NavController) {
     ExpenditureTrackerTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Add New Expenditure") },
+                    navigationIcon = {
+                        if (navController.previousBackStackEntry != null) {
+                            IconButton(onClick = { navController.navigateUp() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+        ){
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(it),
             color = MaterialTheme.colorScheme.background
         ) {
             val items = listOf(
@@ -97,11 +118,6 @@ fun AddNewExpendituresScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = "Expenditure Tracker",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
-                )
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 120.dp),
                     modifier = Modifier
@@ -112,13 +128,18 @@ fun AddNewExpendituresScreen(navController: NavController) {
                 ) {
                     items(items.size) { index ->
                         val item = items[index]
-                        ExpenditureGridItem(name = item.name, icon = item.icon, onClick = item.onClick)
+                        ExpenditureGridItem(
+                            name = item.name,
+                            icon = item.icon,
+                            onClick = item.onClick
+                        )
                     }
                 }
             }
         }
-    }
+    }}
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenditureGridItem(
@@ -127,6 +148,7 @@ fun ExpenditureGridItem(
     icon: ImageVector,
     onClick: () -> Unit
 ) {
+
     Card(
         onClick = onClick,
         modifier = modifier
@@ -184,6 +206,7 @@ fun ExpenditureGridItem(
         }
     }
 }
+
 @Composable
 fun ExpendituresTabScreen(navController: NavHostController) {
     var tabIndex by remember { mutableStateOf(0) }
@@ -194,31 +217,42 @@ fun ExpendituresTabScreen(navController: NavHostController) {
         FloatingActionButton(onClick = { navController.navigate(Screens.addScreen.route) }) {
             Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
-    }){
-    Column(modifier = Modifier.fillMaxWidth().padding(it)) {
-        TabRow(selectedTabIndex = tabIndex) {
-            tabs.forEachIndexed { index, title ->
-                Tab(text = { Text(title) },
-                    selected = tabIndex == index,
-                    onClick = { tabIndex = index },
-                    icon = {
-                        when (index) {
-                            0 -> Icon(imageVector = Icons.Default.Home, contentDescription = null)
-                            /*1 -> Icon(imageVector = Icons.Default.Info, contentDescription = null)*/
-                            1 -> Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+    }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(it)
+        ) {
+            TabRow(selectedTabIndex = tabIndex) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(text = { Text(title) },
+                        selected = tabIndex == index,
+                        onClick = { tabIndex = index },
+                        icon = {
+                            when (index) {
+                                0 -> Icon(
+                                    imageVector = Icons.Default.Home,
+                                    contentDescription = null
+                                )
+                                /*1 -> Icon(imageVector = Icons.Default.Info, contentDescription = null)*/
+                                1 -> Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
+            }
+            when (tabIndex) {
+                0 -> CurrentMonthScreen(viewModel)
+                /*            1 -> AddNewExpendituresScreen(navController)*/
+                1 -> PreviousMonthsScreen(viewModel)
             }
         }
-        when (tabIndex) {
-            0 -> CurrentMonthScreen( viewModel)
-/*            1 -> AddNewExpendituresScreen(navController)*/
-            1 -> PreviousMonthsScreen( viewModel)
-        }
-    }
     }
 }
+
 @Composable
 fun CurrentMonthScreen(
     viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
@@ -241,27 +275,32 @@ fun CurrentMonthScreen(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "Current Month Expenditure",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
-                )
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+            Scaffold {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    items(currentMonthFilteredExpenses.size) { expense ->
-                        ExpenseItem(expense = currentMonthFilteredExpenses[expense])
+                    Text(
+                        text = "Current Month Expenditure",
+                        style = MaterialTheme.typography.headlineLarge,
+                        modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)
+                    )
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(currentMonthFilteredExpenses.size) { expense ->
+                            ExpenseItem(expense = currentMonthFilteredExpenses[expense])
+                        }
                     }
                 }
             }
+
         }
     }
 }
+
 @Composable
 fun PreviousMonthsScreen(viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)) {
     val previousMonthsExpenses by viewModel.getAllExpenses().collectAsState(initial = emptyList())

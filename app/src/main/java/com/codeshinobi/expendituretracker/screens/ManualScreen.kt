@@ -2,7 +2,6 @@ package com.codeshinobi.expendituretracker.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,12 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,22 +31,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.codeshinobi.expendituretracker.Greeting
 import com.codeshinobi.expendituretracker.data.ExpensesViewModel
 import com.codeshinobi.expendituretracker.data.entities.Expense
 import com.codeshinobi.expendituretracker.ui.theme.ExpenditureTrackerTheme
-import java.util.Calendar
 import java.util.Date
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManualScreen(
     navController: androidx.navigation.NavController
 ) {
     ExpenditureTrackerTheme {
-        AddExpenditureForm()
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Reports") },
+                    navigationIcon = {
+                        if (navController.previousBackStackEntry != null) {
+                            IconButton(onClick = { navController.navigateUp() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+        )
+            {AddExpenditureForm(
+                modifier = Modifier.padding(it)
+            )}
     }
 }
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +118,8 @@ fun ManualScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpenditureForm(
-    viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
+    viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory),
+    modifier: Modifier
 ) {
     var item by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
