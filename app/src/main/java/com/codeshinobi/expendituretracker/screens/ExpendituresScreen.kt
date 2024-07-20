@@ -185,7 +185,7 @@ fun ExpenditureGridItem(
 fun ExpendituresTabScreen(navController: NavHostController) {
     var tabIndex by remember { mutableStateOf(0) }
 
-    val tabs = listOf("Current Month", "Add New", "Previous Months")
+    val tabs = listOf("Current Month", /*"Add New",*/ "Previous Months")
     val viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
     Column(modifier = Modifier.fillMaxWidth()) {
         TabRow(selectedTabIndex = tabIndex) {
@@ -196,8 +196,8 @@ fun ExpendituresTabScreen(navController: NavHostController) {
                     icon = {
                         when (index) {
                             0 -> Icon(imageVector = Icons.Default.Home, contentDescription = null)
-                            1 -> Icon(imageVector = Icons.Default.Info, contentDescription = null)
-                            2 -> Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+                            /*1 -> Icon(imageVector = Icons.Default.Info, contentDescription = null)*/
+                            1 -> Icon(imageVector = Icons.Default.Settings, contentDescription = null)
                         }
                     }
                 )
@@ -205,8 +205,8 @@ fun ExpendituresTabScreen(navController: NavHostController) {
         }
         when (tabIndex) {
             0 -> CurrentMonthScreen( viewModel)
-            1 -> AddNewExpendituresScreen(navController)
-            2 -> PreviousMonthsScreen( viewModel)
+/*            1 -> AddNewExpendituresScreen(navController)*/
+            1 -> PreviousMonthsScreen( viewModel)
         }
     }
 }
