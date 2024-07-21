@@ -22,4 +22,10 @@ interface PurchasePlanDao {
 
     @Query("SELECT * FROM purchase_plans")
     suspend fun getAllPurchasePlans(): List<PurchasePlanWithItems>
+
+    @Query("UPDATE purchase_plan_items SET isPurchased = :isPurchased WHERE purchasePlanId = :planId AND id = :purchasePlanItemId")
+    suspend fun updatePurchasedStatus(planId: Int, isPurchased: Boolean, purchasePlanItemId: Int)
+
+    @Query("UPDATE purchase_plan_items SET actualPurchasePrice = :actualPurchasePrice WHERE purchasePlanId = :planId AND id = :purchasePlanItemId")
+    suspend fun updatePurchasePrice(planId: Int, actualPurchasePrice: Double, purchasePlanItemId: Int)
 }

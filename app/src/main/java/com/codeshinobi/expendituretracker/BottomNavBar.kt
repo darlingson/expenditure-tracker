@@ -1,6 +1,7 @@
 package com.codeshinobi.expendituretracker
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -29,6 +31,7 @@ import com.codeshinobi.expendituretracker.screens.ExpendituresTabScreen
 import com.codeshinobi.expendituretracker.screens.GalleryScreen
 import com.codeshinobi.expendituretracker.screens.HomeScreen
 import com.codeshinobi.expendituretracker.screens.ManualScreen
+import com.codeshinobi.expendituretracker.screens.PurchasePlanInfo
 import com.codeshinobi.expendituretracker.screens.ReceiptScanScreen
 import com.codeshinobi.expendituretracker.screens.RecognizeResult
 import com.codeshinobi.expendituretracker.screens.ReportsScreen
@@ -131,6 +134,14 @@ fun BottomNavigationBar() {
             }
             composable(Screens.addPurchasePlanScreen.route) {
                 AddPurchasePlanScreen(navController = navController)
+            }
+            composable("purchase_plan_info/{planId}") { backStackEntry ->
+                val context = LocalContext.current
+//                Toast.makeText(context, "Plan ID: ${backStackEntry.arguments?.getString("planId")}", Toast.LENGTH_LONG).show()
+                val planId = backStackEntry.arguments?.getString("planId")
+                if (planId != null) {
+                    PurchasePlanInfo(navController, planId.toInt())
+                }
             }
         }
     }

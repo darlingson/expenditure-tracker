@@ -20,4 +20,12 @@ class PurchasePlanRepository(private val purchasePlanDao: PurchasePlanDao) {
     suspend fun getAllPurchasePlans(): List<PurchasePlanWithItems> {
         return purchasePlanDao.getAllPurchasePlans()
     }
+
+    suspend fun updatePurchasedStatus(planId: Int, isPurchased: Boolean, purchasePlanItemId: Int) {
+        purchasePlanDao.updatePurchasedStatus(planId, isPurchased, purchasePlanItemId)
+    }
+
+    suspend fun updatePurchasePrice(planId: Int, actualPurchasePrice: Double, purchasePlanItemId: Int) {
+        purchasePlanDao.updatePurchasePrice(planId, actualPurchasePrice, purchasePlanItemId)
+    }
 }

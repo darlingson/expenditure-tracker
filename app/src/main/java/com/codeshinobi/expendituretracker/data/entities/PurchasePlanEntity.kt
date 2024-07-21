@@ -25,11 +25,13 @@ data class PurchasePlanEntity(
 data class PurchasePlanItemEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    var purchasePlanId: Int, // Foreign key referencing PurchasePlanEntity
+    var purchasePlanId: Int,
     val itemName: String,
     val quantity: Int,
-    val estimatedPricePerItem: Double,
-    val estimatedItemPriceTotal: Double
+    val estimatedPricePerItem: Double = 0.0,
+    val estimatedItemPriceTotal: Double = 0.0,
+    val actualPurchasePrice: Double = 0.0,
+    val isPurchased: Boolean = false
 )
 data class PurchasePlanWithItems(
     @Embedded val purchasePlan: PurchasePlanEntity,

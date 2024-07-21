@@ -51,6 +51,14 @@ class ExpensesViewModel(
         val purchasePlans = purchasePlanRepository.getAllPurchasePlans()
         emit(purchasePlans)
     }
+
+    fun updatePurchasedStatus(planId: Int, isPurchased: Boolean, purchasePlanItemId: Int) = viewModelScope.launch {
+        purchasePlanRepository.updatePurchasedStatus(planId, isPurchased, purchasePlanItemId)
+    }
+
+    fun updatePurchasePrice(planId: Int, actualPurchasePrice: Double, purchasePlanItemId: Int) = viewModelScope.launch {
+        purchasePlanRepository.updatePurchasePrice(planId, actualPurchasePrice, purchasePlanItemId)
+    }
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

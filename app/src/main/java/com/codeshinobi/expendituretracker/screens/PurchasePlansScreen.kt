@@ -1,5 +1,6 @@
 package com.codeshinobi.expendituretracker.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,7 +62,9 @@ fun PurchasePlansScreen(navController: NavHostController, viewModel: ExpensesVie
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp).clickable{
+                                navController.navigate("purchase_plan_info/${planWithItems.purchasePlan.id}")
+                            },
                         elevation = CardDefaults.elevatedCardElevation(4.dp)
                     ) {
                         Column(
