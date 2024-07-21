@@ -1,6 +1,5 @@
 package com.codeshinobi.expendituretracker.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +13,7 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -38,14 +37,16 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPurchasePlanScreen(
-    navController: NavHostController, viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
-){
+    navController: NavHostController,
+    viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
+) {
     var date by remember { mutableStateOf("") }
     var totalAmount by remember { mutableStateOf("") }
     var itemName by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
     var estimatedPricePerItem by remember { mutableStateOf("") }
     var estimatedItemPriceTotal by remember { mutableStateOf("") }
+    var itemsList by remember { mutableStateOf(mutableListOf<PurchasePlanItemEntity>()) }
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -64,27 +65,31 @@ fun AddPurchasePlanScreen(
                 }
             )
         }
-    ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(it).verticalScroll(
-            rememberScrollState()
-        )) {
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+        ) {
             val state = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
             DatePicker(state = state, modifier = Modifier.padding(16.dp))
+
             TextField(
                 value = totalAmount,
                 onValueChange = { totalAmount = it },
                 modifier = Modifier
-                    .background(Color.Gray.copy(alpha = 0.2f))
                     .padding(8.dp)
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 label = { Text("Total Purchase Plan Amount") }
             )
+
+            // Item fields
             TextField(
                 value = itemName,
                 onValueChange = { itemName = it },
                 modifier = Modifier
-                    .background(Color.Gray.copy(alpha = 0.2f))
                     .padding(8.dp)
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
@@ -94,7 +99,6 @@ fun AddPurchasePlanScreen(
                 value = quantity,
                 onValueChange = { quantity = it },
                 modifier = Modifier
-                    .background(Color.Gray.copy(alpha = 0.2f))
                     .padding(8.dp)
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
@@ -104,7 +108,6 @@ fun AddPurchasePlanScreen(
                 value = estimatedPricePerItem,
                 onValueChange = { estimatedPricePerItem = it },
                 modifier = Modifier
-                    .background(Color.Gray.copy(alpha = 0.2f))
                     .padding(8.dp)
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
@@ -114,12 +117,44 @@ fun AddPurchasePlanScreen(
                 value = estimatedItemPriceTotal,
                 onValueChange = { estimatedItemPriceTotal = it },
                 modifier = Modifier
-                    .background(Color.Gray.copy(alpha = 0.2f))
                     .padding(8.dp)
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
                 label = { Text("Estimated Item Price Total") }
             )
+
+            Button(
+                onClick = {
+                    val newItem = PurchasePlanItemEntity(
+                        purchasePlanId = 0, // This will be set when the plan is saved
+                        itemName = itemName,
+                        quantity = quantity.toIntOrNull() ?: 0,
+                        estimatedPricePerItem = estimatedPricePerItem.toDoubleOrNull() ?: 0.0,
+                        estimatedItemPriceTotal = estimatedItemPriceTotal.toDoubleOrNull() ?: 0.0
+                    )
+                    itemsList.add(newItem)
+                    // Clear item input fields after adding
+                    itemName = ""
+                    quantity = ""
+                    estimatedPricePerItem = ""
+                    estimatedItemPriceTotal = ""
+                },
+                modifier = Modifier
+                    .padding(top = 16.dp)
+            ) {
+                Text("Add Item")
+            }
+
+            // Display added items
+            itemsList.forEach { item ->
+                Text(
+                    text = "Item: ${item.itemName}, Quantity: ${item.quantity}, Price per Item: ${item.estimatedPricePerItem}, Total Price: ${item.estimatedItemPriceTotal}",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
+            }
+
             Button(
                 onClick = {
                     scope.launch {
@@ -127,14 +162,8 @@ fun AddPurchasePlanScreen(
                             date = date,
                             totalPurchasePlanAmount = totalAmount.toDoubleOrNull() ?: 0.0
                         )
-                        val newItem = PurchasePlanItemEntity(
-                            purchasePlanId = 0,
-                            itemName = itemName,
-                            quantity = quantity.toIntOrNull() ?: 0,
-                            estimatedPricePerItem = estimatedPricePerItem.toDoubleOrNull() ?: 0.0,
-                            estimatedItemPriceTotal = estimatedItemPriceTotal.toDoubleOrNull() ?: 0.0
-                        )
-                        viewModel.insertPurchasePlan(newPlan, listOf(newItem))
+                        viewModel.insertPurchasePlan(newPlan, itemsList)
+                        // Optionally, navigate back or clear the form after saving
                     }
                 },
                 modifier = Modifier.padding(top = 16.dp)
