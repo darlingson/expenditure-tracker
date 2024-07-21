@@ -6,13 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.codeshinobi.expendituretracker.data.daos.BudgetsDao
 import com.codeshinobi.expendituretracker.data.daos.ExpensesDao
+import com.codeshinobi.expendituretracker.data.daos.PurchasePlanDao
 import com.codeshinobi.expendituretracker.data.entities.Budget
 import com.codeshinobi.expendituretracker.data.entities.Expense
+import com.codeshinobi.expendituretracker.data.entities.PurchasePlanEntity
+import com.codeshinobi.expendituretracker.data.entities.PurchasePlanItemEntity
 
-@Database(entities = [Expense::class, Budget::class], version = 1)
+@Database(entities = [Expense::class, Budget::class, PurchasePlanEntity::class, PurchasePlanItemEntity::class], version = 2)
 abstract class ExpensesDB : RoomDatabase() {
     abstract fun expensesDao(): ExpensesDao
     abstract fun budgetsDao(): BudgetsDao
+    abstract fun purchasePlanDao(): PurchasePlanDao
 
 
     companion object {

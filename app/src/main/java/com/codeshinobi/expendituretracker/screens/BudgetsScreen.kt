@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
@@ -52,7 +53,7 @@ import java.util.Locale
 fun BudgetsScreen(navController: NavHostController) {
     var tabIndex by remember { mutableStateOf(0) }
 
-    val tabs = listOf("Overview",  "Previous Months")
+    val tabs = listOf("Overview",  "Previous Months", "Purchase Plans")
     val viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
     Column(modifier = Modifier.fillMaxWidth()) {
         TabRow(selectedTabIndex = tabIndex) {
@@ -64,6 +65,7 @@ fun BudgetsScreen(navController: NavHostController) {
                         when (index) {
                             0 -> Icon(imageVector = Icons.Default.Home, contentDescription = null)
                             1 -> Icon(imageVector = Icons.Default.Info, contentDescription = null)
+                            2 -> Icon(imageVector = Icons.Default.DateRange, contentDescription = null)
                         }
                     }
                 )
@@ -72,9 +74,14 @@ fun BudgetsScreen(navController: NavHostController) {
         when (tabIndex) {
             0 -> CurrentMonthBudgetOverView( viewModel)
             1 -> PreviousMonthBudgets( viewModel)
+            2 -> PurchasePlansScreen(navController, viewModel)
         }
     }
 }
+//@Composable
+//fun PurchasePlansScreen(navController: NavHostController, viewModel: ExpensesViewModel) {
+//    Text("Purchase Plans Screen")
+//}
 @Composable
 fun CurrentMonthBudgetOverView(
     viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModel.Factory)
