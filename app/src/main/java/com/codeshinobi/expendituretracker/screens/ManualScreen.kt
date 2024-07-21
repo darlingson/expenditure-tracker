@@ -47,7 +47,7 @@ fun ManualScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "Reports") },
+                    title = { Text(text = "Manual Entry") },
                     navigationIcon = {
                         if (navController.previousBackStackEntry != null) {
                             IconButton(onClick = { navController.navigateUp() }) {
@@ -61,9 +61,11 @@ fun ManualScreen(
                 )
             }
         )
-            {AddExpenditureForm(
+        {
+            AddExpenditureForm(
                 modifier = Modifier.padding(it)
-            )}
+            )
+        }
     }
 }
 //@OptIn(ExperimentalMaterial3Api::class)

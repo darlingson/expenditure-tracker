@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -16,11 +15,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +47,7 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.android.parcel.Parcelize
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GalleryScreen(
     navController: NavController
@@ -48,45 +56,64 @@ fun GalleryScreen(
     var isProcessing by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var recogText: RecognizeResult? = null
-    Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState(), enabled = true),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Gallery")
-        RequestContentPermission(
-            navController = navController,
-            onTextScanned = { text ->
-                scannedText = text
-                recogText = RecognizeResult(text)
-            },
-            onProcessing = { processing ->
-//                Toast.makeText(context, "Text scanning completed", Toast.LENGTH_SHORT).show()
-                isProcessing = false
-                val gson: Gson = GsonBuilder().create()
-                if (recogText == null || recogText?.text.isNullOrEmpty()){
-//                    Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    Log.d("TAG", "recogText: ${recogText?.text}")
-                    val recogJson = gson.toJson(recogText)
-                    navController.navigate(
-                        "text_recon/{text}"
-                            .replace(
-                                oldValue = "{text}",
-                                newValue = recogJson
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Scan Gallery Photo") },
+                navigationIcon = {
+                    if (navController.previousBackStackEntry != null) {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Back"
                             )
-                    )
-                }
-            }
-        )
-        if (isProcessing) {
-            Text(text = isProcessing.toString())
-            DotLoadingAnimation()
+                        }
+                    }
+                },
+            )
         }
-        else {
-            Text(text = isProcessing.toString())
-            Text(text = scannedText)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState(), enabled = true)
+                .padding(it),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Gallery")
+            RequestContentPermission(
+                navController = navController,
+                onTextScanned = { text ->
+                    scannedText = text
+                    recogText = RecognizeResult(text)
+                },
+                onProcessing = { processing ->
+//                Toast.makeText(context, "Text scanning completed", Toast.LENGTH_SHORT).show()
+                    isProcessing = false
+                    val gson: Gson = GsonBuilder().create()
+                    if (recogText == null || recogText?.text.isNullOrEmpty()) {
+//                    Toast.makeText(context, "No text found", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Log.d("TAG", "recogText: ${recogText?.text}")
+                        val recogJson = gson.toJson(recogText)
+                        navController.navigate(
+                            "text_recon/{text}"
+                                .replace(
+                                    oldValue = "{text}",
+                                    newValue = recogJson
+                                )
+                        )
+                    }
+                }
+            )
+            if (isProcessing) {
+                Text(text = isProcessing.toString())
+                DotLoadingAnimation()
+            } else {
+                Text(text = isProcessing.toString())
+                Text(text = scannedText)
+            }
         }
     }
 }
@@ -96,7 +123,7 @@ fun RequestContentPermission(
     navController: NavController,
     onTextScanned: (String) -> Unit,
     onProcessing: (Boolean) -> Unit
-    ) {
+) {
     val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
     /**
