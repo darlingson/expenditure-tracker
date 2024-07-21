@@ -1,5 +1,7 @@
 package com.codeshinobi.expendituretracker
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.codeshinobi.expendituretracker.screens.AddNewExpendituresScreen
+import com.codeshinobi.expendituretracker.screens.AddPurchasePlanScreen
 import com.codeshinobi.expendituretracker.screens.BudgetsScreen
 import com.codeshinobi.expendituretracker.screens.ExpendituresTabScreen
 import com.codeshinobi.expendituretracker.screens.GalleryScreen
@@ -33,6 +36,7 @@ import com.codeshinobi.expendituretracker.screens.ScanResultsScreen
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationBar() {
@@ -124,6 +128,9 @@ fun BottomNavigationBar() {
             }
             composable(Screens.addScreen.route) {
                 AddNewExpendituresScreen(navController = navController)
+            }
+            composable(Screens.addPurchasePlanScreen.route) {
+                AddPurchasePlanScreen(navController = navController)
             }
         }
     }

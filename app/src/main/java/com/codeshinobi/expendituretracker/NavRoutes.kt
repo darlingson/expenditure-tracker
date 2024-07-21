@@ -14,4 +14,5 @@ sealed class Screens(val route: String) {
         }
     }
     object addScreen : Screens("add_screen_route")
+    object addPurchasePlanScreen : Screens("add_purchase_plan_route")
 }
